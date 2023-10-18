@@ -1,0 +1,80 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <unistd.h>
+
+int numero_aleatorio;
+void juego();
+int main();
+
+int obtenerNumero() {
+    int num;
+    char buffer[100]; 
+    int numLeidos;
+
+    do {
+        numLeidos = scanf("%d", &num);
+
+        if (numLeidos != 1) {
+            printf("Ingresa un dato numerico por favor.\n");
+            fgets(buffer, sizeof(buffer), stdin);
+            sleep(1);
+            main();
+        }
+    } while (numLeidos != 1);
+
+    return num;
+}
+
+//Function designed for random number generation	
+int numeroAleatorio() {
+    srand(time(0));
+    numero_aleatorio = rand() % 10 + 1; //  Modify the limit values of the generated number.
+    return numero_aleatorio;
+}
+//Function designed for when the number is incorrect
+void reintento(){
+    char Respuesta;
+    printf("Como fallaste , quieres probar con otro numero?\ns)Si\nn)No\n");
+    scanf(" %c", &Respuesta);  
+    if(Respuesta=='S' || Respuesta=='s'){
+    	printf("El numero aleatorio era: %d , suerte para la proxima\n", numero_aleatorio);
+    	sleep(1);
+        main();
+    } else if(Respuesta=='N' || Respuesta=='n'){
+        printf("En ese caso sigue intentando\n");
+        juego();
+    }
+}
+
+void juego(){
+    int Valor;  
+    char Respuesta;
+    Valor = obtenerNumero();
+    if(numero_aleatorio == Valor){ 
+    	printf("El numero aleatorio era: %d por lo que ganaste\n", numero_aleatorio);
+    	printf("Quieres volver a jugar?\ns)Si\nn)No\n)");
+    	scanf(" %c", &Respuesta);  
+    	if(Respuesta=='S' || Respuesta=='s'){
+    	main();
+    } else if(Respuesta=='N' || Respuesta=='n'){
+        printf("En ese caso ojala lo hayas disfrutado\n");
+        exit(0);
+    }
+    scanf(" %c", &Respuesta);  
+    } else if (numero_aleatorio < Valor){
+        printf("El numero es mayor al generado\n");
+        reintento(); 
+    } else if(numero_aleatorio > Valor){
+        printf("El numero es menor al generado\n");
+        reintento(); 
+    }
+}
+
+int main() {
+	system("cls");
+    printf("Bienvenido al generador de numeros del 1 al 10, intenta adivinar el numero generado para ganar\nEscribe el numero: ");
+    numeroAleatorio(); 
+    juego(); 
+    return 0;
+}
