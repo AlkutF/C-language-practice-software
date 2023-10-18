@@ -12,7 +12,7 @@ void Creacion(string nombre, string contenido) {
         archivo.close();
         cout << "Archivo 'Tareas/" << nombre << ".txt' creado y contenido escrito correctamente." << endl;
     } else {
-        cerr << "No se pudo abrir el archivo." << endl;
+        cout << "No se pudo abrir el archivo." << endl;
     }
 }
 
