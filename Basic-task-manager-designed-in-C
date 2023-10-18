@@ -1,0 +1,106 @@
+#include <iostream>
+#include <windows.h>
+#include <fstream>
+#include <cstdio>
+using namespace std;
+
+//Function for the creation of txt documents
+void Creacion(string nombre, string contenido) {
+    ofstream archivo("Tareas/" + nombre + ".txt"); 
+    if (archivo.is_open()) {
+        archivo << contenido << endl;
+        archivo.close();
+        cout << "Archivo 'Tareas/" << nombre << ".txt' creado y contenido escrito correctamente." << endl;
+    } else {
+        cerr << "No se pudo abrir el archivo." << endl;
+    }
+}
+
+//Function for editing txt documents
+void Editar(string nombre) {
+    ifstream archivo("Tareas/" + nombre + ".txt");
+    if (archivo.is_open()) {
+        cout << "Contenido actual de la tarea '" << nombre << "':" << endl;
+        string linea;
+        while (getline(archivo, linea)) {
+            cout << linea << endl;
+        }
+        archivo.close();
+        cout << "Escribe el nuevo contenido:" << endl;
+        string nuevoContenido;
+        cin.ignore();
+        getline(cin, nuevoContenido);
+        ofstream archivoModificado("Tareas/" + nombre + ".txt");
+        if (archivoModificado.is_open()) {
+            archivoModificado << nuevoContenido << endl;
+            archivoModificado.close();
+            cout << "Contenido modificado correctamente." << endl;
+        } else {
+            cerr << "No se pudo abrir el archivo para editar." << endl;
+        }
+    } else {
+        cerr << "La tarea '" << nombre << "' no existe." << endl;
+    }
+}
+
+//Function for txt document deletion
+void Eliminar(string nombre) {
+    string rutaArchivo = "Tareas/" + nombre + ".txt"; 
+    if (remove(rutaArchivo.c_str()) == 0) {
+        cout << "Archivo '" << nombre << "' eliminado correctamente." << endl;
+    } else {
+        cerr << "No se pudo eliminar el archivo '" << nombre << "'." << endl;
+    }
+}
+
+
+int main() {
+	//Job folder generation
+    string nombreCarpeta = "Tareas";
+    if (CreateDirectory(nombreCarpeta.c_str(), NULL)) {
+        cout << "Carpeta 'Tareas' creada correctamente." << endl;
+    } else {
+    }
+	int a = 1;
+	//Program execution
+	do {
+    char Accion;
+    cout << "Que accion desea realizar\nC=Crear Tarea\nE=Editar Tarea\nB=Eliminar Tarea" << endl;
+    cin >> Accion;
+
+    if (Accion == 'C' || Accion == 'c') {
+        cout << "Cual es el nombre de la tarea?" << endl;
+	    string nombre;
+	    cin.ignore();  
+	    getline(cin, nombre); 
+	    cout << "Escribe el contenido de la tarea:" << endl;
+	    string contenido;
+	    getline(cin, contenido);  
+	    Creacion(nombre, contenido);
+    } else if (Accion == 'E' || Accion == 'e') {
+        cout<<"Que tarea desea modificar"<<endl;
+        string nombre;
+        cin.ignore();  
+	    getline(cin, nombre); 
+	    Editar(nombre);
+    } else if (Accion == 'B' || Accion == 'b') {
+    	cout<<"Que tarea desea eliminar"<<endl;
+        string nombre;
+        cin.ignore();  
+	    getline(cin, nombre); 
+        Eliminar(nombre);
+       
+    }
+    int Valor;
+        cout << "Desea salir del programa \n1) Si\n2) No" << endl;
+        cin >> Valor;
+        if (Valor == 1) {
+            a = 2;
+        } else if (Valor == 2) {
+            a = 1;
+            system("cls");
+        }
+    } while (a == 1);
+
+    return 0;
+}
