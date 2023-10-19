@@ -1,0 +1,130 @@
+/*The program is a basic agenda that allows data entry, deletion and display of the same, for
+ this it uses a txt class file, vectors, a constructor and functions that are explained in the code */
+#include <iostream>
+#include <fstream>
+#include <vector>
+using namespace std;
+
+vector<string> numeros;
+
+struct Contacto {
+    string nombre;
+    string numero; 
+};
+//The input function only opens the txt and edits it. 
+void ingreso() {
+    ofstream archivo("Contactos.txt", std::ios::app);
+    if (archivo.is_open()) {
+        string nombre, numero;
+
+        cout << "Por favor ingrese el nombre del contacto" << endl;
+        cin >> nombre;
+
+        cout << "Por favor ingrese el numero del contacto" << endl;
+        cin >> numero;
+        // Verificar si el número ya existe
+        for (const string& contacto : numeros) {
+            if (contacto == numero) {
+                cout << "El numero ya esta registrado , por favor revisar la agenda" << endl;
+                archivo.close(); 
+                sleep(1);
+                return; 
+            }
+        }
+
+        archivo << nombre + " " + numero << endl; 
+        archivo.close(); 
+        numeros.push_back(numero); 
+        cout << "Contacto ingresado correctamente." << endl;
+    } else {
+        cout << "Existe un error en el ingreso" << endl;
+    }
+}
+/*The delete function creates a new file named "temporary". The same is used to save the changes, in the function through vectors the txt is analyzed and if any
+ matches it is eliminated.*/
+void eliminacion(){
+    string nombreEliminar;
+    cout << "Ingrese el nombre del contacto que desea eliminar: ";
+    cin >> nombreEliminar;
+
+    ifstream archivoEntrada("Contactos.txt");
+    ofstream archivoTemporal("Temporal.txt");
+
+    if (archivoEntrada.is_open() && archivoTemporal.is_open()) {
+        vector<Contacto> contactos;
+        Contacto contacto;
+
+        while (archivoEntrada >> contacto.nombre >> contacto.numero) {
+            if (contacto.nombre != nombreEliminar) {
+                contactos.push_back(contacto);
+            }
+        }
+
+        archivoEntrada.close();
+        archivoTemporal.close();
+
+        ofstream archivoSalida("Contactos.txt");
+        for (const Contacto& c : contactos) {
+            archivoSalida << c.nombre << " " << c.numero << endl;
+        }
+
+        archivoSalida.close();
+        remove("Temporal.txt");  
+
+        cout << "Contacto eliminado exitosamente." << endl;
+    } else {
+        cout << "No se pudo abrir uno de los archivos." << endl;
+    }
+}
+//The query function only opens the file and reads it. 
+void consulta(){
+    ifstream archivo("Contactos.txt"); 
+    if (archivo.is_open()) {
+        string linea;
+        while (getline(archivo, linea)) {
+            cout << linea << endl; 
+        }
+        archivo.close(); 
+    } else {
+        cout << "No se pudo abrir el archivo." << endl;
+    }
+}
+
+int main(){
+    int ciclo = 0;
+    string opcion;
+    //Options are handled as string to avoid errors, in case of modifying to integers do not work with arrays in the switch.
+    do {
+        cout << "Agenda de contactos" << endl;
+        cout << "Que accion desea realizar\n1) Ingresar Contacto\n2) Eliminar Contacto\n3) Ver contactos\n4) Salir" << endl;
+        cin >> opcion;
+        switch(opcion[0]){ 
+            case '1':
+                ingreso();
+                sleep(1);
+                system("cls");
+                break;
+            case '2':
+                consulta();
+                eliminacion();
+                sleep(2);
+                system("cls");
+                break;
+            case '3':
+                consulta();
+                cout << "Para volver a eleguir una opcion presione enter" << endl;
+                getchar();
+                getchar();
+                system("cls");
+                break;
+            case '4':
+                ciclo = 1;
+                break;
+            default:
+                cout << "Ingrese un valor valido por favor" << endl;
+                sleep(1);
+				system("cls");
+        }
+    } while (ciclo == 0);
+    return 0;
+}
